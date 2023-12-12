@@ -8,7 +8,7 @@ import { Pokemon } from 'src/Interfaces/Pokemon';
 })
 export class AppComponent implements OnInit {
   Pokemons: Pokemon[] = [];
-  Pagina = 1;
+  Pagina = 1; // Numero de la Pagina
   SizePokemons = 20; // Cantidad de Pokémon por página
   isDataLoading = false;
 
