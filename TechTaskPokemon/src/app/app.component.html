@@ -1,16 +1,21 @@
 <ion-content class="ion-padding">
+  <!--| CADA POKEMON |-->
+
   <div *ngFor="let pokemon of Pokemons">
     <ion-card>
       <img
+        style="height: 100px; margin: 10px"
         alt="Silhouette of mountains"
-        [src]="pokemon.sprites.front_default"
+        [src]="pokemon.sprites.other.dream_world.front_default"
       />
       <ion-card-header>
         <ion-card-title>{{ pokemon.name }}</ion-card-title>
         <ion-card-subtitle>Altura : {{ pokemon.height }} M</ion-card-subtitle>
         <ion-card-subtitle>Peso : {{ pokemon.weight }} Kg</ion-card-subtitle>
+        <ion-card-subtitle
+          >Experiencia : {{ pokemon.base_experience }}
+        </ion-card-subtitle>
       </ion-card-header>
-
       <ion-card-content>
         Habilidades :
         <p *ngFor="let habilidad of pokemon.abilities">
@@ -19,6 +24,9 @@
       </ion-card-content>
     </ion-card>
   </div>
+
+  <!--| SCROLL INFINITO |-->
+
   <ion-infinite-scroll (ionInfinite)="loadMoreData($event)">
     <ion-infinite-scroll-content
       loadingText="Cargando..."

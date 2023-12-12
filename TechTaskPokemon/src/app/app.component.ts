@@ -8,77 +8,81 @@ import { Pockemon } from 'src/Interfaces/Pokemon';
 })
 export class AppComponent implements OnInit {
   Pokemons: Pockemon[] = [];
-
-  /*
-    Nombre, Experiencia, Altura, Peso y Habilidades de cada uno.
-  */
-
   currentPage = 1;
+  pageSize = 20; // Cantidad de Pokémon por página
+  isDataLoading = false;
 
   ngOnInit(): void {
     this.loadData();
   }
 
+  //* CARGA DE DATOS :
   async loadData() {
     try {
-      const nextPageData = await this.getPokemons(this.currentPage);
-      this.Pokemons = [...this.Pokemons, ...nextPageData];
+      this.isDataLoading = true;
+      this.Pokemons = await this.getPokemons(this.currentPage);
     } catch (error) {
       console.error('Error al cargar datos:', error);
+    } finally {
+      this.isDataLoading = false;
     }
   }
 
+  //* OBTENER LOS POKEMONS POR PAGINA :
   async getPokemons(page: number): Promise<Pockemon[]> {
-    const response = await axios.get(
-      `https://pokeapi.co/api/v2/pokemon?limit=10&page=${page}`
-    );
-    const pokemonUrls = response.data.results.map((result: any) => result.url);
+    const promises: Promise<AxiosResponse<Pockemon>>[] = [];
 
-    const promises: Promise<AxiosResponse<Pockemon>>[] = pokemonUrls.map(
-      (url: string) => axios.get(url)
-    );
+    // Calcular el rango de Pokémon para esta página
+    const start = this.pageSize * (page - 1) + 1;
+    const end = this.pageSize * page;
+
+    for (let i = start; i <= end; i++) {
+      promises.push(
+        axios
+          .get(`https://pokeapi.co/api/v2/pokemon/${i}`)
+          .then((response) => response.data)
+          .catch(() => console.log('error')) // Manejar solicitudes fallidas
+      );
+    }
+
     const responses = await Promise.all(promises);
 
-    return responses.map((response) => response.data);
+    // Filtrar respuestas nulas o fallidas
+    const validResponses: any[] = responses.filter(
+      (response) => response !== null
+    );
+
+    console.log(validResponses);
+    return validResponses;
   }
 
+  //* CARGA DE MAS DATOS :
   async loadMoreData(event: any) {
     try {
-      this.currentPage++;
-      const nextPageData = await this.getPokemons(this.currentPage);
+      if (!this.isDataLoading) {
+        this.isDataLoading = true;
 
-      if (nextPageData.length > 0) {
-        this.Pokemons = [...this.Pokemons, ...nextPageData];
-        event.target.complete();
-      } else {
-        // Si no hay más elementos, desactiva el Infinite Scroll
-        event.target.disabled = true;
+        const nextPage = this.currentPage + 1;
+        const nextPageData = await this.getPokemons(nextPage);
+
+        // Añadir un retraso de 1000 milisegundos.
+        setTimeout(() => {
+          if (nextPageData.length > 0) {
+            this.Pokemons = [...this.Pokemons, ...nextPageData];
+            this.currentPage = nextPage;
+
+            this.isDataLoading = false;
+            event.target.complete();
+          } else {
+            // Desactivar el Infinite Scroll si no hay más datos
+            event.target.disabled = true;
+          }
+        }, 1000);
       }
     } catch (error) {
       console.error('Error al cargar más datos:', error);
+      this.isDataLoading = false;
       event.target.complete();
     }
   }
-
-  // ngOnInit(): void {
-  //   this.metodoPokemon();
-  // }
-
-  // async metodoPokemon() {
-  //   const promises: Promise<AxiosResponse<Pockemon>>[] = [];
-
-  //   try {
-  //     for (let i = 1; i < 101; i++) {
-  //       promises.push(axios.get(`https://pokeapi.co/api/v2/pokemon/${i}`));
-  //     }
-
-  //     const responses = await Promise.all(promises);
-
-  //     this.Pokemons = responses.map((response) => response.data);
-
-  //     console.log(this.Pokemons);
-  //   } catch (error) {
-  //     console.error('Error en las solicitudes HTTP:', error);
-  //   }
-  // }
 }
