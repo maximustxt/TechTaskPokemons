@@ -4,7 +4,6 @@
 ```
 npm install
 ```
-<br/>
 
 - Por último para levantar el proyecto diríjase en la raíz del mismo , levante la terminal y ejecute este comando : 
 
