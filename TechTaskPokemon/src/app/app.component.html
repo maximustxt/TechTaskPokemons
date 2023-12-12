@@ -1,4 +1,17 @@
 <ion-content class="ion-padding">
+  <div class="ContainerTitulo">
+    <img src="../assets/img/ImagenPokemon.png" />
+  </div>
+  <ion-refresher (ionRefresh)="Refresh($event)">
+    <ion-refresher-content
+      pullingIcon="arrow-dropdown"
+      pullingText="Desliza para actualizar"
+      refreshingSpinner="crescent"
+      refreshingText="Actualizando..."
+    >
+    </ion-refresher-content>
+  </ion-refresher>
+
   <!--| CADA POKEMON |-->
 
   <div *ngFor="let pokemon of Pokemons">
@@ -17,7 +30,7 @@
         </ion-card-subtitle>
       </ion-card-header>
       <ion-card-content>
-        Habilidades :
+        <h2 style="font-weight: 800">Habilidades :</h2>
         <p *ngFor="let habilidad of pokemon.abilities">
           {{ habilidad.ability.name }}
         </p>

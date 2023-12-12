@@ -8,8 +8,8 @@ import { Pockemon } from 'src/Interfaces/Pokemon';
 })
 export class AppComponent implements OnInit {
   Pokemons: Pockemon[] = [];
-  currentPage = 1;
-  pageSize = 20; // Cantidad de Pokémon por página
+  Pagina = 1;
+  SizePokemons = 20; // Cantidad de Pokémon por página
   isDataLoading = false;
 
   ngOnInit(): void {
@@ -20,7 +20,7 @@ export class AppComponent implements OnInit {
   async loadData() {
     try {
       this.isDataLoading = true;
-      this.Pokemons = await this.getPokemons(this.currentPage);
+      this.Pokemons = await this.getPokemons(this.Pagina);
     } catch (error) {
       console.error('Error al cargar datos:', error);
     } finally {
@@ -33,8 +33,8 @@ export class AppComponent implements OnInit {
     const promises: Promise<AxiosResponse<Pockemon>>[] = [];
 
     // Calcular el rango de Pokémon para esta página
-    const start = this.pageSize * (page - 1) + 1;
-    const end = this.pageSize * page;
+    const start = this.SizePokemons * (page - 1) + 1;
+    const end = this.SizePokemons * page;
 
     for (let i = start; i <= end; i++) {
       promises.push(
@@ -52,7 +52,6 @@ export class AppComponent implements OnInit {
       (response) => response !== null
     );
 
-    console.log(validResponses);
     return validResponses;
   }
 
@@ -62,14 +61,14 @@ export class AppComponent implements OnInit {
       if (!this.isDataLoading) {
         this.isDataLoading = true;
 
-        const nextPage = this.currentPage + 1;
+        const nextPage = this.Pagina + 1;
         const nextPageData = await this.getPokemons(nextPage);
 
         // Añadir un retraso de 1000 milisegundos.
         setTimeout(() => {
           if (nextPageData.length > 0) {
             this.Pokemons = [...this.Pokemons, ...nextPageData];
-            this.currentPage = nextPage;
+            this.Pagina = nextPage;
 
             this.isDataLoading = false;
             event.target.complete();
@@ -83,6 +82,21 @@ export class AppComponent implements OnInit {
       console.error('Error al cargar más datos:', error);
       this.isDataLoading = false;
       event.target.complete();
+    }
+  }
+
+  async Refresh(event: any) {
+    try {
+      const refreshData = await this.getPokemons(1);
+      if (refreshData.length > 0) {
+        this.Pokemons = refreshData;
+        this.Pagina = 1;
+      }
+      event.target.complete();
+      alert('Lista actualizada exitosamente');
+    } catch (error) {
+      event.target.complete();
+      alert('Hubo un error en actualizar la lista');
     }
   }
 }
