@@ -1,16 +1,10 @@
 <ion-content class="ion-padding">
+  <ion-refresher slot="fixed" (ionRefresh)="Refresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
   <div class="ContainerTitulo">
     <img src="../assets/img/ImagenPokemon.png" />
   </div>
-  <ion-refresher (ionRefresh)="Refresh($event)">
-    <ion-refresher-content
-      pullingIcon="arrow-dropdown"
-      pullingText="Desliza para actualizar"
-      refreshingSpinner="crescent"
-      refreshingText="Actualizando..."
-    >
-    </ion-refresher-content>
-  </ion-refresher>
 
   <!--| CADA POKEMON |-->
 

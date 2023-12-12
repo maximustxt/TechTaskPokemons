@@ -93,10 +93,8 @@ export class AppComponent implements OnInit {
         this.Pagina = 1;
       }
       event.target.complete();
-      alert('Lista actualizada exitosamente');
     } catch (error) {
       event.target.complete();
-      alert('Hubo un error en actualizar la lista');
     }
   }
 }
