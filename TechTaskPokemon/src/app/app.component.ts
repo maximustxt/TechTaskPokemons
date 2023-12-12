@@ -85,6 +85,8 @@ export class AppComponent implements OnInit {
     }
   }
 
+  //* METODO PARA REFRESCAR LA PAGINA :
+
   async Refresh(event: any) {
     try {
       const refreshData = await this.getPokemons(1);
