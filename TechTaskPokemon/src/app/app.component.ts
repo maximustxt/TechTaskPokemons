@@ -1,13 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import axios, { AxiosResponse } from 'axios';
-import { Pockemon } from 'src/Interfaces/Pokemon';
+import { Pokemon } from 'src/Interfaces/Pokemon';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements OnInit {
-  Pokemons: Pockemon[] = [];
+  Pokemons: Pokemon[] = [];
   Pagina = 1;
   SizePokemons = 20; // Cantidad de Pokémon por página
   isDataLoading = false;
@@ -29,8 +29,8 @@ export class AppComponent implements OnInit {
   }
 
   //* OBTENER LOS POKEMONS POR PAGINA :
-  async getPokemons(page: number): Promise<Pockemon[]> {
-    const promises: Promise<AxiosResponse<Pockemon>>[] = [];
+  async getPokemons(page: number): Promise<Pokemon[]> {
+    const promises: Promise<AxiosResponse<Pokemon>>[] = [];
 
     // Calcular el rango de Pokémon para esta página
     const start = this.SizePokemons * (page - 1) + 1;
